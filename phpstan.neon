@@ -1,0 +1,8 @@
+parameters:
+	level: 6
+	paths:
+		- src
+		- tests
+	ignoreErrors:
+		- '#Property [a-zA-Z0-9\\_]+::\$[a-zA-Z0-9\\_]+ has no typehint specified.#'
+		- '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_\(\)]+ return type with generic interface [a-zA-Z0-9\\_]+ does not specify its types#'

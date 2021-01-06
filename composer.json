@@ -1,0 +1,14 @@
+{
+    "name": "zargener/habrmail",
+    "type": "project",
+    "require": {
+        "symfony/dom-crawler": "^5.2",
+        "symfony/mime": "^5.2",
+        "symfony/css-selector": "^5.2",
+        "egulias/email-validator": "^3.0",
+        "html2text/html2text": "^4.3"
+    },
+    "require-dev" : {
+        "phpstan/phpstan": "^0.12.64"
+    }
+}
