@@ -6,6 +6,6 @@
 
 Пример:
 
-![Страница в браузере](https://raw.githubusercontent.com/zargener/habrmail/master/doc/source_page.png.png)
+![Страница в браузере](https://raw.githubusercontent.com/zargener/habrmail/master/doc/source_page.png)
 ![Комментарии в виде почтового треда](https://raw.githubusercontent.com/zargener/habrmail/master/doc/thread_list.png)
 ![Статья в текстовом виде](https://raw.githubusercontent.com/zargener/habrmail/master/doc/article_texted.png)
