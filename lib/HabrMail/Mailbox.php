@@ -7,7 +7,7 @@ class Mailbox {
     protected $localMessages;
     protected $mailSubdirs;
         
-    public function __construct(string $path) : void {
+    public function __construct(string $path) {
         $this->path = $path;
         $this->localMessages = [];
 

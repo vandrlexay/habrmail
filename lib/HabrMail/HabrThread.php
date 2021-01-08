@@ -14,7 +14,7 @@ class HabrThread {
     protected $threadId = null;
     protected $commentTree = null;
 
-    public function __construct(string $data) : void {
+    public function __construct(string $data) {
         $this->data = $data;
         $this->crawler = new Crawler($this->data);
     }
