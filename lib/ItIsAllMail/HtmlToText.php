@@ -1,6 +1,6 @@
 <?php
 
-namespace HabrMail;
+namespace ItIsAllMail;
 
 use Html2Text\Html2Text;
 

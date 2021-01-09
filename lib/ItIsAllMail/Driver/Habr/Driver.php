@@ -1,28 +1,50 @@
 <?php
 
-namespace HabrMail;
+namespace ItIsAllMail\Driver\Habr;
+
+use ItIsAllMail\DriverInterface;
+use ItIsAllMail\HtmlToText;
+use ItIsAllMail\Message;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-use HabrMail\HabrMessage;
-use HabrMail\HtmlToText;
+class HabrDriver implements DriverInterface {
 
-class HabrThread {
-
-    protected $data;
     protected $crawler;
-    protected $threadId = null;
-    protected $commentTree = null;
+    protected $driverCode = "habr.com";
 
-    public function __construct(string $data) {
-        $this->data = $data;
-        $this->crawler = new Crawler($this->data);
+    public function getCode() : string {
+        return $this->driverCode;
     }
+
+    public function matchURL(string $url) : bool {
+        if (preg_match('/' . $this->getCode() . '/', $url))
+            return true;
+        else
+            return false;
+    }
+
+
+    /**
+     * Return array of all posts in thread, including original article
+     */
+    public function getPosts(array $source) : array {
+
+        $html = file_get_contents($source["url"]);
+        $this->crawler = new Crawler($html);
+        
+        $posts = [];
+        $posts[] = $this->getFirstPost();
+        $posts = array_merge($posts, $this->getComments());
+
+        return $posts;
+    }
+
 
     /**
      * Make post from the article itself
      */
-    public function getFirstPost() : HabrMessage {
+    public function getFirstPost() : Message {
         $postContainer = $this->crawler->filter('div.post__wrapper');
         $author = $postContainer->filter(".user-info__nickname")->first()->text();
         $postText = $this->postToText(
@@ -36,14 +58,14 @@ class HabrThread {
 
         $this->threadId = $postId;
 
-        return new HabrMessage([
-            'from' => $author,
+        return new Message([
+            'from' => $author . "@" . $this->getCode(),
             'subject' => $postTitle,
             'parent' => null,
             'created' => $this->parseDate($postDate),
-            'id' => $postId,
+            'id' => $postId . "@" . $this->getCode(),
             'body' => $postText,
-            'thread' => $postId
+            'thread' => $postId . "@" . $this->getCode()
         ]);
     }
 
@@ -65,30 +87,18 @@ class HabrThread {
                     $parent = $this->threadId;
                 }
                 
-                $comments[] = new HabrMessage([
-                    'from' => $node->filter(".user-info_inline")->first()->attr("data-user-login"),
+                $comments[] = new Message([
+                    'from' => $node->filter(".user-info_inline")->first()->attr("data-user-login")  . "@" . $this->getCode(),
                     'subject' => $node->filter(".comment__message")->first()->text(),
-                    'parent' => $parent,
+                    'parent' => $parent . "@" . $this->getCode(),
                     'created' => $this->parseDate($node->filter(".comment__date-time")->first()->text()),
-                    'id' => $node->filter(".comment__head")->first()->attr("rel"),
+                    'id' => $node->filter(".comment__head")->first()->attr("rel")  . "@" . $this->getCode(),
                     'body' => $this->postToText($node->filter(".comment__message")->first()),
-                    'thread' => $this->threadId
+                    'thread' => $this->threadId  . "@" . $this->getCode()
                 ]);
             });
 
         return $comments;
-    }
-
-
-    /**
-     * Return array of all posts in thread, including original article
-     */
-    public function getPosts() : array {
-        $posts = [];
-        $posts[] = $this->getFirstPost();
-        $posts = array_merge($posts, $this->getComments());
-
-        return $posts;
     }
 
     /**
@@ -136,4 +146,6 @@ class HabrThread {
         
         return $finalDate;
     }
+
+
 }

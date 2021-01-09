@@ -1,14 +1,14 @@
 <?php
 
-namespace HabrMail;
+namespace ItIsAllMail;
 
 use Symfony\Component\Mime\Header\Headers;
-use Symfony\Component\Mime\Message;
+use Symfony\Component\Mime\Message as MIMEMessage;
 use Symfony\Component\Mime\Part\Multipart\AlternativePart;
 use Symfony\Component\Mime\Part\TextPart;
 use Symfony\Component\Mime\Header\DateHeader;
 
-class HabrMessage {
+class Message {
 
     // only message related
     protected $subject;
@@ -18,10 +18,7 @@ class HabrMessage {
     protected $id;
     protected $body;
     protected $thread;
-
-    // the rest
-    protected $driverSuffix = "habr.com";
-        
+      
     public function __construct(array $source) {
         $this->subject = $source["subject"];
         $this->from = $source["from"];
@@ -48,8 +45,8 @@ EOT;
     public function toMIMEString() : string {
 
         $headers = (new Headers())
-            ->addMailboxListHeader('From', [$this->from . "@habr.com"])
-            ->addMailboxListHeader('To', [ $this->thread . "@habr.com"])
+            ->addMailboxListHeader('From', [ $this->from ])
+            ->addMailboxListHeader('To', [ $this->thread ])
             ->addTextHeader('Subject', $this->getSubject())
             ->addDateHeader('Date', $this->created)
             ->addIdHeader('Message-id', [ $this->getId() ]);
@@ -64,13 +61,13 @@ EOT;
             )
         );
 
-        $message = new Message($headers, $body);
+        $message = new MIMEMessage($headers, $body);
 
         return $message->toString();
     }
 
     public function getId() : string {
-        return $this->id . "@" . $this->driverSuffix;
+        return $this->id;
     }
 
     public function getSubject() : string {
@@ -78,7 +75,7 @@ EOT;
     }
 
     public function getParentId() : string {
-        return $this->parent . "@" . $this->driverSuffix;
+        return $this->parent;
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace HabrMail;
+namespace ItIsAllMail;
 
 class Mailbox {
     protected $path;
