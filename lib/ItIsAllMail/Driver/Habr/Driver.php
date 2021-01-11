@@ -77,6 +77,12 @@ class HabrDriver implements DriverInterface {
         $this->crawler->filter('.comment')->each(
             function ($node, $i) use (&$comments) {
 
+                $isBanned = $node->filter(".comment__message_banned")->count() > 0;
+
+                if ($isBanned) {
+                    return;
+                }
+
                 $parent = $node->closest("li.content-list__item_comment")->filter(".parent_id");
                 if ($parent->count() > 0) {
                     $parent = $parent->first()->attr("data-parent_id");
